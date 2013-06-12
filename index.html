@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>evsdrp demo</title>
+		<!--<link rel="stylesheet" href="css/greentheme.min.css" />-->
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+		<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+		<script type="text/javascript" src="js/gblfnc.js"></script>
+		<link rel="stylesheet" href="css/gblStyle.css" />
+		<script type="text/javascript">
+			/* Get Location Data once page is finished loading */
+			$(document).ready( function () { getLocation(); });
+		</script>
+	</head>
+	<body>
+		<!--Hidden Fields to store geoLocation-->
+		<input type="hidden" name="hidLat" id="hidLat" />
+		<input type="hidden" name="hidLng" id="hidLng" />
+		<!--Start of First Page-->
+		<div id="dvMain" data-role="page" data-theme="a">
+			<!--Header-->
+			<div data-role="header" data-theme="a">
+				<h1>evsdrp demo</h1>
+				<!--Refresh Button-->
+				<a class="ui-btn-right ui-btn ui-btn-icon-notext ui-btn-corner-all ui-shadow ui-btn-up-a" data-iconpos="notext" data-theme="a" data-role="button" data-icon="refresh" title="Refresh" onclick="RefreshPage();">
+					<span class="ui-btn-inner ui-btn-corner-all">
+						<span class="ui-btn-text"> Refresh </span>
+						<span data-form="ui-icon" class="ui-icon ui-icon-refresh ui-icon-shadow"></span>
+					</span>
+				</a>
+			</div>
+			<!--Content-->
+			<div date-role="content" data-theme="b">
+				<!--Refreshing Dialog-->
+				<div data-role="popup" id="popupRefresh" data-theme="e" data-overlay-theme="a" style="padding: 5px 15px 5px 15px;">
+					<p>Refreshing...</p>
+				</div>
+				<!--Navigation Bar-->
+				<div data-role="none" data-theme="a" style="width: 300px; margin: 0 auto;">
+					<fieldset style="text-align: center;" data-role="controlgroup" data-type="horizontal" class="ui-corner-all ui-controlgroup ui-controlgroup-horizontal">
+						<input type="radio" name="radio-view-a" id="radio-view-a-a" value="grid" onclick="getData('btn4sqr','');">
+						<label for="radio-view-a-a" data-form="ui-btn-up-a" data-theme="a" class="ui-btn ui-corner-left ui-radio-on ui-btn-active ui-btn-up-a">4sqr</label>
+						<input type="radio" name="radio-view-a" id="radio-view-a-b" value="grid" onclick="getData('btntwtr','0.5km');">
+						<label for="radio-view-a-b" data-form="ui-btn-up-a" data-theme="a" class="ui-btn ui-controlgroup-middle ui-radio-off ui-btn-up-a">twtr</label>
+						<input type="radio" name="radio-view-a" id="radio-view-b-a" value="grid" onclick="getData('btninsta','');">
+						<label for="radio-view-b-a" data-form="ui-btn-up-a" data-theme="a" class="ui-btn ui-corner-right ui-controlgroup-last ui-radio-off ui-btn-up-a">insta</label>					
+					</fieldset> 
+				</div>
+				<!--Popup Menu for Twitter Range-->
+				<div id="dvPopup" style="display: none;" data-role="none" class="ui-body">
+					<a href="#popupMenu" data-transition="pop" data-role="button" data-inline="false" data-rel="popup"><span id="mnuRange">Choose...</span></a>
+					<div data-role="popup" id="popupMenu" data-theme="b" class="ui-popup ui-body-a ui-overlay-shadow ui-corner-all" aria-disabled="false" data-disabled="false" data-shadow="true" data-corners="true" data-transition="none" data-position-to="origin">
+						<ul data-role="listview" data-inset="true" style="min-width:210px;" data-theme="b" class="ui-listview ui-listview-inset ui-corner-all ui-shadow">
+							<li data-role="divider" data-theme="a" class="ui-li ui-li-static ui-btn-up-a ui-corner-top">Tweet Range</li>
+							<li data-corners="false" data-shadow="false" data-iconshadow="true" data-theme="b" class="ui-btn ui-li ui-btn-up-b" style="text-align: center;" onclick="getData('btntwtr','0.5km');">
+								0.5km															
+							</li>
+							<li data-corners="false" data-shadow="false" data-iconshadow="true" data-theme="b" class="ui-btn ui-li ui-btn-up-b" style="text-align: center;" onclick="getData('btntwtr','1.0km');">
+								1.0km
+							</li>
+							<li data-corners="false" data-shadow="false" data-iconshadow="true" data-theme="b" class="ui-btn ui-li ui-btn-up-b" style="text-align: center;" onclick="getData('btntwtr','5.0km');">
+								5.0km
+							</li>
+							<li data-corners="false" data-shadow="false" data-iconshadow="true" data-theme="b" class="ui-btn ui-li ui-btn-up-b" style="text-align: center;" onclick="getData('btntwtr','10.0km');">
+								10.0km
+							</li>
+							<li data-corners="false" data-shadow="false" data-iconshadow="true" data-theme="b" class="ui-btn ui-li ui-btn-up-b" style="text-align: center;" onclick="getData('btntwtr','25.0km');">
+								25.0km
+							</li>
+							<li data-corners="false" data-shadow="false" data-iconshadow="true" data-theme="b" class="ui-btn ui-li ui-btn-up-b" style="text-align: center;" onclick="getData('btntwtr','50.0km');">
+								50.0km											
+							</li>
+						</ul>
+					</div>
+				</div>
+				<!--Show All Foursqure Venues Button-->
+				<center><a href="#" id="dv4sqrHdr" style="display: none; width: 225px;" data-role="button" onclick="getVenues();">Show All Venues</a></center>
+				<!--Results Containers-->
+				<div data-role="none" id="dv4sqr"></div>
+				<div data-role="none" id="dvtwtr"></div>
+				<div data-role="none" id="dvinsta"></div>
+				<!--Search Venue Popup (FourSquare Only)-->
+				<div data-role="popup" id="popupSearch" data-theme="b" class="ui-popup ui-body-a ui-overlay-shadow ui-corner-all" aria-disabled="false" data-disabled="false" data-shadow="true" data-corners="true" data-transition="none" data-position-to="origin">
+					<div data-role="header" data-theme="a" class="ui-corner-top ui-header ui-bar-a" role="banner">
+						<ul data-role="listview" data-inset="true" style="min-width:210px;" data-theme="b" class="ui-listview ui-listview-inset ui-corner-all ui-shadow">
+							<li data-role="divider" data-theme="a" class="ui-li ui-li-static ui-btn-up-a ui-corner-top">Search By?</li>
+							<li id="aboutVenue" data-corners="false" data-shadow="false" data-iconshadow="true" data-theme="b" class="ui-btn ui-li ui-btn-up-b" style="text-align: center;">
+								Name
+							</li>
+							<li id="atVenue" data-corners="false" data-shadow="false" data-iconshadow="true" data-theme="b" class="ui-btn ui-li ui-btn-up-b" style="text-align: center;">
+								Location
+							</li>
+							<li id="imgVenue" data-corners="false" data-shadow="false" data-iconshadow="true" data-theme="b" class="ui-btn ui-li ui-btn-up-b" style="text-align: center;">
+								Images
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--End of First Page-->
+		<!--Start of Second Page-->
+		<div id="dvSearch" data-role="page" data-theme="a">
+			<div data-role="header" data-theme="a">
+				<a href="#dvMain" class="ui-btn-left ui-btn ui-btn-icon-notext ui-btn-corner-all ui-shadow ui-btn-up-a" data-iconpos="notext" data-theme="a" data-role="button" data-icon="back" title="Back" data-transition="slide" data-direction="reverse">
+					<span class="ui-btn-inner ui-btn-corner-all">
+						<span class="ui-btn-text">Back</span>
+						<span data-form="ui-icon" class="ui-icon ui-icon-arrow-l ui-icon-shadow"></span>
+					</span>
+				</a>
+				<h1>evsdrp demo: Venue Search</h1>
+				<a class="ui-btn-right ui-btn ui-btn-icon-notext ui-btn-corner-all ui-shadow ui-btn-up-a" data-iconpos="notext" data-theme="a" data-role="button" data-icon="refresh" title="Refresh">
+					<span class="ui-btn-inner ui-btn-corner-all">
+						<span class="ui-btn-text"> Refresh </span>
+						<span data-form="ui-icon" class="ui-icon ui-icon-refresh ui-icon-shadow"></span>
+					</span>
+				</a>
+			</div>
+			<div data-role="popup" id="popupLoading" data-theme="e" data-overlay-theme="a" style="padding: 5px 5px 5px 5px;">
+				<p>Loading...</p>
+			</div>
+			<div id="dvVenuetwtr" data-role="none" data-theme="a"></div>
+		</div>
+		<!--End of Second Page-->
+	</body>
+</html>
